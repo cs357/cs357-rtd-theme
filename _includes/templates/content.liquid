@@ -14,6 +14,31 @@
             <div class="markdown-body" itemprop="articleBody">
                 {{ content }}
             </div>
+            <br/>
+
+        {%- if page.changelog %}
+        {% assign sorted = page.changelog | sort: 'date' | reverse %}
+        <div class="markdown-body" itemprop="articleBody">
+            <h2 id="changelog">Changelog</h2>
+            <ul>
+            {%- for item in sorted -%}
+                <li><a>{{item.date | date_to_long_string: "ordinal", "US" }}: {{item.name}} ({{item.netid}}) &mdash; {{item.message}} </a></li>
+            {%- endfor %}
+            </ul>
+        </div>
+        {% endif -%}
+        {%- if page.author %}
+        <br/>
+        <div class="markdown-body" itemprop="articleBody">
+            <h2 id="authors">Authors</h2>
+            <ul>
+            {%- for item in page.author -%}
+                <li><a>{{item}} </a></li>
+            {%- endfor %}
+            </ul>
+        </div>
+        {% endif -%}
+
         </div>
         {% include templates/footer.liquid %}
     </div>
