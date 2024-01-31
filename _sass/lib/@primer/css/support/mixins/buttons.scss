@@ -24,7 +24,7 @@
         darken($bg, 3%) 0%,
         darken($bg2, 3%) 90%
       );
-      background-position: 0 (-$em-spacer-5);
+      background-position: 0 -$em-spacer-5;
       border-color: rgba($black, 0.35);
     }
 
@@ -64,7 +64,7 @@
         darken($bg, 2%) 0%,
         darken($bg2, 2%) 90%
       );
-      background-position: 0 (-$em-spacer-5);
+      background-position: 0 -$em-spacer-5;
       border-color: $black-fade-50;
     }
 
