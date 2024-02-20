@@ -18,12 +18,26 @@
 
         {%- if page.changelog %}
         {% assign sorted = page.changelog | sort: 'date' | reverse %}
+        {% assign first = sorted | slice: 0, 3%}
+        {% assign remain = sorted | slice: 3, sorted.size%}
         <div class="markdown-body" itemprop="articleBody">
             <h2 id="changelog">Changelog</h2>
             <ul>
-            {%- for item in sorted -%}
+            {%- for item in first -%}
                 <li><a>{{item.date | date_to_long_string: "ordinal", "US" }}: {{item.name}} ({{item.netid}}) &mdash; {{item.message}} </a></li>
             {%- endfor %}
+            </ul>
+            <ul style="list-style-type: none; padding-left: 1.2em;">
+                <li>
+                <details>
+                    <summary>View Remaining Entries</summary>
+                    <ul>
+                    {%- for item in remain -%}
+                        <li><a>{{item.date | date_to_long_string: "ordinal", "US" }}: {{item.name}} ({{item.netid}}) &mdash; {{item.message}} </a></li>
+                    {%- endfor %}
+                    </ul>
+                </details>
+                </li>
             </ul>
         </div>
         {% endif -%}
