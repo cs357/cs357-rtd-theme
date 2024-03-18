@@ -21057,14 +21057,12 @@
               (r = n), (n = o);
             }
             t.Push(
-              t.itemFactory
-                .create("position")
-                .setProperties({
-                  name: t.currentCS,
-                  move: "horizontal",
-                  left: t.create("node", "mspace", [], { width: r }),
-                  right: t.create("node", "mspace", [], { width: n }),
-                })
+              t.itemFactory.create("position").setProperties({
+                name: t.currentCS,
+                move: "horizontal",
+                left: t.create("node", "mspace", [], { width: r }),
+                right: t.create("node", "mspace", [], { width: n }),
+              })
             );
           }),
           (g.Hskip = function (t, e) {
@@ -21859,16 +21857,14 @@
             var s = !0;
             "{" === Q && (t.i++, (s = !1)),
               t.Push(
-                t.itemFactory
-                  .create("braket")
-                  .setProperties({
-                    barmax: i,
-                    barcount: 0,
-                    open: r,
-                    close: n,
-                    stretchy: o,
-                    single: s,
-                  })
+                t.itemFactory.create("braket").setProperties({
+                  barmax: i,
+                  barcount: 0,
+                  open: r,
+                  close: n,
+                  stretchy: o,
+                  single: s,
+                })
               );
           }),
           (Q.Bar = function (t, e) {
@@ -22233,14 +22229,12 @@
             Prooftree: function (t, e) {
               return (
                 t.Push(e),
-                t.itemFactory
-                  .create("proofTree")
-                  .setProperties({
-                    name: e.getName(),
-                    line: "solid",
-                    currentLine: "solid",
-                    rootAtTop: !1,
-                  })
+                t.itemFactory.create("proofTree").setProperties({
+                  name: e.getName(),
+                  line: "solid",
+                  currentLine: "solid",
+                  rootAtTop: !1,
+                })
               );
             },
             Axiom: function (t, e) {
@@ -27033,14 +27027,12 @@
                 return (
                   t.i++,
                   void t.Push(
-                    t.itemFactory
-                      .create("auto open")
-                      .setProperties({
-                        open: n,
-                        close: "|",
-                        smash: r,
-                        right: "\\vphantom{\\int}",
-                      })
+                    t.itemFactory.create("auto open").setProperties({
+                      open: n,
+                      close: "|",
+                      smash: r,
+                      right: "\\vphantom{\\int}",
+                    })
                   )
                 );
               throw new Q.default(
