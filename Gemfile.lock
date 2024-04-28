@@ -261,6 +261,7 @@ GEM
 
 PLATFORMS
   aarch64-linux
+  universal-darwin-23
 
 DEPENDENCIES
   cs357-rtd-theme!
