@@ -16,13 +16,23 @@
                     <h1 id="title">{{page.title}}</h1>
                 {% endif -%}
                 {%- if page.slidesPdf %}
+                    <a style="display:none;" id="local-path-href" href="{{ site.baseurl }}/assets/slides/{{page.slidesPdf}}"></a>
                     <details>
                         <summary style="font-size: 1.1em;"><a>View Slides</a></summary>
                         <style>
                         .pdfobject-container { height: 60vh; width: auto; border: 1px solid #ccc; }
                         </style>
-                        <div id="slides-pdf"><p>If you cannot see the PDF here, click <a href="{{ site.baseurl }}/assets/slides/{{page.slidesPdf}}">here</a> to download the PDF.</p></div>
-                        <script>PDFObject.embed("{{ site.baseurl }}/assets/slides/{{page.slidesPdf}}", "#slides-pdf");</script>
+                        <div id="slides-pdf">
+                            <p>If you cannot see the PDF here, click <a href="{{ site.baseurl }}/assets/slides/{{page.slidesPdf}}">here</a> to download the PDF.</p>
+                        </div>
+                        <script>
+                            let pdfPath = document.getElementById("local-path-href").getAttribute("href");
+                            if (pdfPath.includes("../")) {
+                                console.warn("Detected mirror mode, disabling PDF embed!")
+                            } else {
+                                PDFObject.embed(pdfPath, "#slides-pdf");
+                            }
+                        </script>
                     </details>
                 {% endif -%}
                 {{ content }}
