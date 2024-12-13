@@ -20,6 +20,16 @@ function search(data) {
       .slice(min, max)
       .replace(regexp, (match) => `<span class="bg-yellow">${match}</span>`);
   }
+
+  // Get the current host and protocol
+  const currentUrl = new URL(window.location.href);
+  const pathMatch = currentUrl.pathname.match(/(.*textbook\/)/);
+  if (!pathMatch) {
+    debug("Could not find textbook/ in path");
+  }
+  const basePath = pathMatch[1];
+  const baseUrl = `${currentUrl.protocol}//${currentUrl.host}${basePath}`;
+
   for (page of data) {
     let [title, content] = [null, null];
     try {
@@ -44,8 +54,9 @@ function search(data) {
       debug(e.message);
     }
     if (title || content) {
+      // Use the current host's base URL instead of ui.baseurl
       let result = [
-        `<a href="${ui.baseurl}${page.url}?highlight=${text}">${page.title}</a>`,
+        `<a href="${baseUrl}${page.url}?highlight=${text}">${page.title}</a>`,
       ];
       if (content) {
         let [min, max] = [content.index - 100, content.index + 100];
@@ -93,6 +104,23 @@ function initialize(name) {
       link.closest(`.level-${i}`).addClass("current");
     }
   }
+}
+
+if (location.pathname.endsWith("/search.html")) {
+  const currentUrl = new URL(window.location.href);
+  const pathMatch = currentUrl.pathname.match(/(.*textbook\/)/);
+  if (!pathMatch) {
+    debug("Could not find textbook/ in path");
+  }
+  const basePath = pathMatch[1];
+  const dataUrl = `${currentUrl.protocol}//${currentUrl.host}${basePath}data.json`;
+
+  $.ajax(dataUrl)
+    .done(search)
+    .fail((xhr, message) => {
+      debug(`Failed to load search data: ${message}`);
+      $(".search-results .summary").html("Failed to load search data");
+    });
 }
 
 function toggleCurrent(link) {
@@ -189,7 +217,6 @@ function highlight() {
           debug(e.message);
         }
       });
-    // last node
     $(".search-result").each(function () {
       $(this).html(function (i, html) {
         return html.replace(text, `<span class="bg-yellow">${text}</span>`);
