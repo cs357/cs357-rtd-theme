@@ -5,7 +5,7 @@
         </div>
         <div class="branch p-1">
             <span class="name">
-                {{ site.semester }}
+                {{ site.github.build_revision | slice: 0, 7 }}
             </span>
             <i class="fa fa-caret-down"></i>
         </div>
