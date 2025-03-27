@@ -49,7 +49,6 @@ function search(data) {
       if (page.content) {
         // Get the current host and protocol - CBTF workaround
         page.content = page.content.replaceAll(`="/textbook/`, `="${baseUrl}`);
-        console.log(page.content)
         page.content = $("<div/>").html(page.content).text();
         content = page.content.match(regexp);
       }
