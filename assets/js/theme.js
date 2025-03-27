@@ -21,7 +21,7 @@ function search(data) {
       .replace(regexp, (match) => `<span class="bg-yellow">${match}</span>`);
   }
 
-  // Get the current host and protocol
+  // Get the current host and protocol - CBTF workaround
   const currentUrl = new URL(window.location.href);
   const pathMatch = currentUrl.pathname.match(/(.*textbook\/)/);
   if (!pathMatch) {
@@ -47,6 +47,9 @@ function search(data) {
     }
     try {
       if (page.content) {
+        // Get the current host and protocol - CBTF workaround
+        page.content = page.content.replaceAll(`="/textbook/`, `="${baseUrl}`);
+        console.log(page.content)
         page.content = $("<div/>").html(page.content).text();
         content = page.content.match(regexp);
       }
