@@ -1,3 +1,15 @@
+function getBaseUrl(basePath) {
+  const { origin, pathname } = window.location;
+  const match = pathname.match(
+    new RegExp(`(.*?/${basePath.replace(/^\/+|\/+$/g, "")}/)`)
+  );
+  if (!match) {
+    console.warn(`Base path "/${basePath}/" not found in URL`);
+    return null;
+  }
+  return origin + match[1];
+}
+
 function search(data) {
   let text = new URL(location.href).searchParams.get("q");
   let lang = new URL(location.href).searchParams.get("lang") || ui.lang;
@@ -21,15 +33,6 @@ function search(data) {
       .replace(regexp, (match) => `<span class="bg-yellow">${match}</span>`);
   }
 
-  // Get the current host and protocol - CBTF workaround
-  const currentUrl = new URL(window.location.href);
-  const pathMatch = currentUrl.pathname.match(/(.*textbook\/)/);
-  if (!pathMatch) {
-    debug("Could not find textbook/ in path");
-  }
-  const basePath = pathMatch[1];
-  const baseUrl = `${currentUrl.protocol}//${currentUrl.host}${basePath}`;
-
   for (page of data) {
     let [title, content] = [null, null];
     try {
@@ -47,8 +50,6 @@ function search(data) {
     }
     try {
       if (page.content) {
-        // Get the current host and protocol - CBTF workaround
-        page.content = page.content.replaceAll(`="/textbook/`, `="${baseUrl}`);
         page.content = $("<div/>").html(page.content).text();
         content = page.content.match(regexp);
       }
@@ -56,9 +57,10 @@ function search(data) {
       debug(e.message);
     }
     if (title || content) {
-      // Use the current host's base URL instead of ui.baseurl
       let result = [
-        `<a href="${baseUrl}${page.url}?highlight=${text}">${page.title}</a>`,
+        `<a href="${getBaseUrl(ui.baseurl)}${page.url}?highlight=${text}">${
+          page.title
+        }</a>`,
       ];
       if (content) {
         let [min, max] = [content.index - 100, content.index + 100];
@@ -110,19 +112,22 @@ function initialize(name) {
 
 if (location.pathname.endsWith("/search.html")) {
   const currentUrl = new URL(window.location.href);
-  const pathMatch = currentUrl.pathname.match(/(.*textbook\/)/);
-  if (!pathMatch) {
-    debug("Could not find textbook/ in path");
-  }
-  const basePath = pathMatch[1];
-  const dataUrl = `${currentUrl.protocol}//${currentUrl.host}${basePath}data.json`;
+  const pattern = new RegExp(`(.*?\/${ui.baseurl}\/)`);
+  const pathMatch = currentUrl.pathname.match(pattern);
 
-  $.ajax(dataUrl)
-    .done(search)
-    .fail((xhr, message) => {
-      debug(`Failed to load search data: ${message}`);
-      $(".search-results .summary").html("Failed to load search data");
-    });
+  if (!pathMatch) {
+    debug(`Could not find ${ui.baseurl} in path`);
+  } else {
+    const basePath = pathMatch[1];
+    const dataUrl = `${currentUrl.origin}${basePath}data.json`;
+
+    $.ajax(dataUrl)
+      .done(search)
+      .fail((xhr, message) => {
+        debug(`Failed to load search data: ${message}`);
+        $(".search-results .summary").html("Failed to load search data.");
+      });
+  }
 }
 
 function toggleCurrent(link) {
@@ -269,8 +274,8 @@ $(".status").click(function () {
   $(".addons").toggleClass("d-none");
 });
 
-if (location.pathname == `${ui.baseurl}/search.html`) {
-  $.ajax(`${ui.baseurl}/data.json`)
+if (location.href.startsWith(`${getBaseUrl(ui.baseurl)}search.html`)) {
+  $.ajax(`${getBaseUrl(ui.baseurl)}data.json`)
     .done(search)
     .fail((xhr, message) => debug(message));
 }
@@ -310,7 +315,7 @@ $("div.highlighter-rouge").each(function () {
 });
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register(`${ui.baseurl}/sw.caches.js`);
+  navigator.serviceWorker.register(`${getBaseUrl(ui.baseurl)}sw.caches.js`);
 } else {
   debug("Service Worker not supported!");
 }

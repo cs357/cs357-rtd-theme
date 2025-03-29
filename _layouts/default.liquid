@@ -2,6 +2,30 @@
 layout: tasks/compress
 ---
 
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const fullPath = window.location.pathname;
+    const base = fullPath.split('{{ site.baseurl }}')[0];
+    const buildHost = "{{ site.url }}{{ site.baseurl }}";
+
+    document.querySelectorAll('[href^="/"], [src^="/"]').forEach(el => {
+      const attr = el.hasAttribute('href') ? 'href' : 'src';
+      const val = el.getAttribute(attr);
+      el.setAttribute(attr, base + val);
+    });
+
+    document.querySelectorAll('form[action]').forEach(form => {
+      const action = form.getAttribute('action');
+      if (action.startsWith(buildHost)) {
+        const relPath = action.slice(buildHost.length);
+        form.setAttribute('action', base + "{{ site.baseurl }}" + relPath);
+      }
+    });
+  });
+</script>
+
+
+
 {%- include rest/defaults.liquid -%}
 {%- include common/rest/defaults.liquid -%}
 
