@@ -7,7 +7,7 @@
                 </a>
             </div>
             <span class="version">{{ docs.latest_release.name }}</span>
-            <form class="search pt-2" action="{{ site.baseurl }}/search.html" method="get" autocomplete="off">
+            <form class="search pt-2" action="{{ site.baseurl }}/search.html" method="get" autocomplete="off" onsubmit="return handleSearchSubmit(event, '{{ site.baseurl }}')">
                 <input class="form-control input-block input-sm" type="text" name="q" placeholder="{{ __.search_docs | default: 'Search course content' }}">
             </form>
         </div>
@@ -16,3 +16,16 @@
         </div>
     </div>
 </div>
+
+<script>
+function handleSearchSubmit(event, baseurl) {
+    event.preventDefault();
+    const form = event.target;
+    const searchQuery = form.querySelector('input[name="q"]').value;
+    const currentPath = window.location.pathname;
+    const baseurlIndex = currentPath.indexOf(baseurl);
+    const newPath = currentPath.substring(0, baseurlIndex + baseurl.length) + '/search.html';
+    window.location.href = window.location.origin + newPath + '?q=' + encodeURIComponent(searchQuery);
+    return false;
+}
+</script>
