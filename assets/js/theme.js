@@ -313,9 +313,3 @@ $("div.highlighter-rouge").each(function () {
     $(this).attr("data-lang", match[1]);
   }
 });
-
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register(`${getBaseUrl(ui.baseurl)}sw.caches.js`);
-} else {
-  debug("Service Worker not supported!");
-}
